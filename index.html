@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/jpeg" href="img1.jpg">
+    <meta name="theme-color" content="#2ec4b6">
+    <title>⚡ 𝔾𝕒𝕡𝕣𝕠𝕥 & 𝕊𝕡𝕒𝕞𝕜𝕚𝕝𝕝 ⚡</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg-color: #0b0f12; --card-bg: #141b22; --primary: #2ec4b6; --accent: #ff9f1c;
+            --text-light: #f1f5f9; --text-muted: #94a3b8; --border: rgba(255, 255, 255, 0.08);
+            --sidebar-bg: #0d131a; --sidebar-hover: #182330; --danger: #ef4444; --edit-color: #3b82f6;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-light); overflow-x: hidden; padding-bottom: 70px; position: relative; }
+        header { position: fixed; top: 0; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 10px 5%; background: rgba(11, 15, 18, 0.95); backdrop-filter: blur(12px); z-index: 1000; border-bottom: 1px solid var(--border); }
+        .header-right { display: flex; align-items: center; gap: 12px; }
+        .menu-toggle-btn { font-size: 1.3rem; color: var(--text-light); cursor: pointer; }
+        .logo-container { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+        .logo-img { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); }
+        .logo-text-box { display: flex; flex-direction: column; line-height: 1.1; }
+        .logo-main { font-size: 14px; font-weight: 900; color: #fff; direction: ltr; display: flex; gap: 4px; }
+        .logo-main span { color: var(--accent); }
+        .logo-sub { font-size: 8px; font-weight: 800; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; direction: ltr; text-align: center; }
+        
+        #toastContainer { position: fixed; bottom: 80px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; }
+        .toast { background: var(--card-bg); color: var(--text-light); border: 1px solid var(--primary); padding: 10px 16px; border-radius: 10px; box-shadow: 0 5px 20px rgba(0,0,0,0.4); font-size: 0.82rem; font-weight: 700; }
+        
+        .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px); z-index: 2500; display: none; }
+        .sidebar-overlay.active { display: block; }
+        .sidebar { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: var(--sidebar-bg); z-index: 3000; transition: 0.4s ease; display: flex; flex-direction: column; border-left: 1px solid var(--border); overflow-y: auto; }
+        .sidebar.active { right: 0; }
+        .sidebar-profile { padding: 25px 20px 15px; display: flex; flex-direction: column; align-items: center; text-align: center; border-bottom: 1px solid var(--border); position: relative; }
+        .sidebar-profile .profile-img { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent); margin-bottom: 8px; }
+        .close-sidebar-btn { position: absolute; top: 12px; left: 12px; font-size: 1.2rem; color: var(--text-muted); cursor: pointer; }
+        .sidebar-menu { list-style: none; padding: 10px 0; flex-grow: 1; }
+        .sidebar-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; color: var(--text-light); text-decoration: none; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .sidebar-item:hover { background: var(--sidebar-hover); color: var(--accent); }
+        .sidebar-item-content { display: flex; align-items: center; gap: 10px; }
+        .sidebar-category-header { padding: 6px 20px; font-size: 0.75rem; font-weight: 900; color: var(--accent); background: rgba(255,159,28,0.05); margin-top: 5px; }
+
+        .sidebar-socials { display: flex; justify-content: center; gap: 15px; padding: 15px 20px; border-top: 1px solid var(--border); background: rgba(0,0,0,0.2); }
+        .social-icon { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.05); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--text-light); font-size: 1rem; text-decoration: none; transition: 0.2s; }
+        .social-icon.instagram:hover { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #df5914 45%, #c62937 60%, #a02ab4 90%); color: #fff; border-color: transparent; }
+        .social-icon.phone:hover { background: #2ec4b6; color: #fff; border-color: #2ec4b6; }
+        .social-icon.whatsapp:hover { background: #25d366; color: #fff; border-color: #25d366; }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); z-index: 4000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal-overlay.active { display: flex; }
+        .modal-box { background: var(--card-bg); border: 1px solid var(--border); width: 100%; max-width: 450px; border-radius: 16px; padding: 20px; position: relative; max-height: 90vh; overflow-y: auto; }
+        .close-modal-btn { position: absolute; top: 12px; left: 16px; font-size: 1.3rem; color: var(--text-muted); cursor: pointer; }
+        .form-group { margin-bottom: 10px; }
+        .form-group label { font-size: 0.8rem; font-weight: 700; display: block; margin-bottom: 3px; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 9px 12px; background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 8px; color: var(--text-light); outline: none; font-size: 0.85rem; }
+        .submit-btn { width: 100%; padding: 10px; background: var(--accent); color: #000; border: none; border-radius: 8px; font-weight: 900; cursor: pointer; margin-top: 8px; }
+
+        .hero { margin-top: 65px; padding: 15px 15px 10px; text-align: center; }
+        .brand-logo-banner-img { width: 100%; max-width: 480px; margin: 0 auto 10px; display: flex; justify-content: center; align-items: center; border-radius: 12px; overflow: hidden; border: 1px solid var(--border); background: #000; box-shadow: 0 4px 15px rgba(0,0,0,0.5); cursor: pointer; }
+        .brand-logo-banner-img img { width: 100%; height: auto; display: block; object-fit: contain; }
+
+        .top-search-container { width: 100%; max-width: 520px; position: relative; margin: 10px auto 0; }
+        .top-search-container input { width: 100%; padding: 10px 40px 10px 15px; background: rgba(20, 27, 34, 0.95); border: 2px solid var(--primary); border-radius: 25px; color: var(--text-light); font-size: 0.9rem; outline: none; }
+        .top-search-container i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: var(--primary); }
+
+        .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px 3% 50px; }
+        .product-card { background: #0f251d; border-radius: 12px; border: 1px solid rgba(46, 196, 182, 0.2); overflow: hidden; display: flex; flex-direction: column; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
+        .owner-actions { position: absolute; top: 6px; right: 6px; z-index: 10; display: flex; gap: 4px; display: none; }
+        .owner-btn { background: rgba(0,0,0,0.7); border: none; width: 26px; height: 26px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; }
+        .edit-card-btn { color: var(--edit-color); }
+        .delete-card-btn { color: var(--danger); }
+        
+        .img-container { width: 100%; height: 140px; background: #081410; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; cursor: pointer; padding: 4px; }
+        .product-card img { width: 100%; height: 100%; object-fit: contain; transition: transform 0.3s ease; }
+        .product-card img:hover { transform: scale(1.05); }
+
+        .image-zoom-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(8px); z-index: 6000; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .image-zoom-modal.active { display: flex; }
+        .image-zoom-modal img { max-width: 90%; max-height: 90vh; object-fit: contain; border-radius: 10px; border: 2px solid var(--border); }
+        .close-zoom-btn { position: absolute; top: 20px; left: 25px; font-size: 2rem; color: #fff; cursor: pointer; background: rgba(0,0,0,0.5); width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+        .product-info { padding: 10px 8px; display: flex; flex-direction: column; justify-content: space-between; flex-grow: 1; text-align: center; }
+        .product-title { font-size: 0.9rem; margin: 3px 0; font-weight: 900; color: #ffca3a; }
+        .product-desc { font-size: 0.7rem; color: var(--text-muted); margin-bottom: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+        .info-page-container { padding: 20px 5% 50px; max-width: 800px; margin: 0 auto; display: none; }
+        .info-page-container.active { display: block; }
+        
+        .info-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px; padding: 15px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px; position: relative; }
+        .info-header-row { display: flex; justify-content: space-between; align-items: center; }
+        .info-title { font-size: 1.1rem; font-weight: 900; color: var(--accent); }
+        .info-img-container { width: 100%; height: 200px; background: #000; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .info-img { width: 100%; height: 100%; object-fit: contain; }
+        .info-text { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
+
+        .info-categories-bar { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 15px; }
+        .info-cat-btn { background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: var(--text-light); padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; white-space: nowrap; cursor: pointer; }
+        .info-cat-btn.active { background: var(--primary); color: #000; border-color: var(--primary); }
+
+        .phone-float { position: fixed; bottom: 70px; left: 15px; background: #2ec4b6; color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; z-index: 1000; text-decoration: none; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .whatsapp-float { position: fixed; bottom: 125px; left: 15px; background: #25d366; color: white; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; z-index: 1000; text-decoration: none; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .music-float-btn { position: fixed; bottom: 180px; left: 15px; background: var(--card-bg); color: var(--accent); width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; z-index: 1000; cursor: pointer; border: 1px solid var(--border); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+
+        .wild-info-widget { position: fixed; bottom: 85px; right: 15px; z-index: 999; display: flex; align-items: center; gap: 8px; direction: rtl; max-width: 250px; }
+        .wild-avatar-container { position: relative; width: 45px; height: 45px; border-radius: 50%; border: 2px solid #2ec4b6; overflow: hidden; background: #000; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.5); cursor: pointer; }
+        .wild-avatar-container img { width: 100%; height: 100%; object-fit: cover; }
+        .wild-bubble { background: #141b22; border: 2px solid #2ec4b6; color: #f1f5f9; padding: 8px 10px; border-radius: 14px; font-size: 0.72rem; font-weight: 700; line-height: 1.3; position: relative; box-shadow: 0 5px 20px rgba(0,0,0,0.4); cursor: pointer; user-select: none; }
+        .wild-close-btn { position: absolute; top: -8px; left: -8px; background: #ef4444; color: #fff; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; cursor: pointer; border: 2px solid #141b22; z-index: 10; }
+
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--sidebar-bg); border-top: 1px solid var(--border); display: flex; justify-content: space-around; padding: 6px 0; z-index: 1000; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-muted); text-decoration: none; font-size: 0.7rem; font-weight: 700; cursor: pointer; }
+        .nav-item i { font-size: 1.1rem; margin-bottom: 2px; }
+        .nav-item.active { color: var(--accent); }
+    </style>
+</head>
+<body>
+    <audio id="bgMusic" loop><source src="music.mp3" type="audio/mpeg"></audio>
+
+    <div class="music-float-btn" onclick="toggleMusic()"><i class="fa-solid fa-volume-high" id="musicIcon"></i></div>
+
+    <div class="wild-info-widget" id="wildInfoWidget">
+        <div class="wild-close-btn" onclick="closeWildWidget(event)" title="إغلاق">&times;</div>
+        <div class="wild-avatar-container" onclick="getNextWildInfo()"><img src="img1.jpg" alt="Gaprot"></div>
+        <div class="wild-bubble" id="wildInfoBubble" onclick="getNextWildInfo()">مرحباً بك في عالم 𝔽𝕝𝕒𝕞𝕖 & 𝕊𝕡𝕒𝕞𝕜𝕚𝕝𝕝! اضغط هنا لمعرفة أسرار جو الجبروت ⚡</div>
+    </div>
+
+    <div id="toastContainer"></div>
+  
+    <header>
+        <div class="header-right">
+            <div class="menu-toggle-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></div>
+            <a href="#" onclick="showMainSection()" class="logo-container">
+                <img src="img1.jpg" alt="Logo" class="logo-img">
+                <div class="logo-text-box">
+                    <div class="logo-main">𝕲𝕒𝕡𝕣𝕠𝕥 <span>& 𝕊𝕡𝕒𝕞𝕜𝕚𝕝𝕝</span></div>
+                    <div class="logo-sub">⚡ 𝓡𝓔𝓟𝓣𝓘𝓛𝓔𝓢 ⚡</div>
+                </div>
+            </a>
+        </div>
+    </header>
+
+    <div class="image-zoom-modal" id="imageZoomModal" onclick="closeZoomModal()">
+        <span class="close-zoom-btn">&times;</span>
+        <img id="zoomedImg" alt="Zoomed Image">
+    </div>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+    <aside class="sidebar" id="sidebar">
+        <span class="close-sidebar-btn" onclick="toggleSidebar()">&times;</span>
+        <div class="sidebar-profile">
+            <img src="img1.jpg" alt="Logo" class="profile-img">
+            <div style="font-size:1rem; font-weight:900;" id="sidebarUserName">زائر</div>
+            <div style="font-size:0.7rem; color:var(--primary);" id="sidebarUserEmail">تسجيل الدخول مطلوب</div>
+            <div id="visitorCounterBox" style="display:none; margin-top:6px; font-size:0.75rem; background:rgba(46,196,182,0.1); border:1px dashed var(--primary); padding:3px 8px; border-radius:6px; color:var(--primary);">
+                <i class="fa-solid fa-chart-line"></i> عدد الزيارات: <span id="visitorCountVal">0</span>
+            </div>    
+        </div>
+
+        <ul class="sidebar-menu">
+            <a class="sidebar-item" id="sidebarAddProductItem" onclick="openAdminModal(); toggleSidebar();" style="display:none;"><div class="sidebar-item-content"><i class="fa-solid fa-plus-circle" style="color:var(--accent);"></i><span>إضافة عنصر جديد</span></div></a>
+            <a class="sidebar-item" id="sidebarAddInfoItem" onclick="openAnimalInfoModal(); toggleSidebar();" style="display:none;"><div class="sidebar-item-content"><i class="fa-solid fa-circle-info" style="color:var(--primary);"></i><span>إضافة معلومة الجبروت</span></div></a>
+            
+            <div class="sidebar-category-header">الأقسام الأساسية</div>
+            <a class="sidebar-item" onclick="showMainSection(); filterCategory('all'); toggleSidebar();"><div class="sidebar-item-content"><i class="fa-solid fa-border-all"></i><span>عرض الكل</span></div></a>
+            <a class="sidebar-item" onclick="showMainSection(); filterCategory('Gallery'); toggleSidebar();"><div class="sidebar-item-content"><i class="fa-solid fa-dragon"></i><span>Gallery</span></div></a>
+            <a class="sidebar-item" onclick="showMainSection(); filterCategory('My Story'); toggleSidebar();"><div class="sidebar-item-content"><i class="fa-solid fa-staff-snake"></i><span>My Story</span></div></a>
+            <a class="sidebar-item" onclick="showMainSection(); filterCategory('venom'); toggleSidebar();"><div class="sidebar-item-content"><i class="fa-solid fa-paw"></i><span>venom</span></div></a>
+            <a class="sidebar-item" onclick="showMainSection(); filterCategory('spamkill'); toggleSidebar();"><div class="sidebar-item-content"><i class="fa-solid fa-spider"></i><span>spamkill</span></div></a>
+            <a class="sidebar-item" onclick="showMainSection(); filterCategory('Sukuna'); toggleSidebar();"><div class="sidebar-item-content"><i class="fa-solid fa-box-archive"></i><span>Sukuna</span></div></a>
+            <a class="sidebar-item" onclick="showMainSection(); filterCategory('Anime'); toggleSidebar();"><div class="sidebar-item-content"><i class="fa-solid fa-bowl-food" style="color:var(--accent);"></i><span>Anime</span></div></a>
+            
+            <div class="sidebar-category-header">المعلومات والقواميس</div>
+            <a class="sidebar-item" onclick="showInfoSection(); toggleSidebar();"><div class="sidebar-item-content"><i class="fa-solid fa-book-open" style="color:var(--accent);"></i><span>معلومات عن جو الجبروت</span></div></a>
+            
+            <!-- تسجيل الدخول البسيط للمالك -->
+            <div id="loginSection" style="padding: 15px; text-align: center; background: #111; margin: 10px; border-radius: 8px;">
+                <input type="text" id="usernameInput" placeholder="اكتب اسم المالك هنا..." style="width: 90%; padding: 8px; margin-bottom: 8px; border-radius: 5px; border: 1px solid #444; background: #222; color: #fff;">
+                <br>
+                <button onclick="simpleLogin()" style="width: 95%; padding: 8px; background: #ff4d4d; color: #fff; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">دخول المالك</button>
+            </div>
+
+            <!-- رسالة الترحيب -->
+            <div id="welcomeSection" style="display: none; padding: 15px; text-align: center; background: #111; margin: 10px; border-radius: 8px;">
+                <h3 id="welcomeMsg" style="margin-bottom: 10px; font-size: 16px; color: #fff;"></h3>
+                <button onclick="simpleLogout()" style="padding: 6px 15px; background: #ff4d4d; color: #fff; border: none; border-radius: 5px; cursor: pointer;">تسجيل خروج</button>
+            </div>
+        </ul>
+
+        <div class="sidebar-socials">
+            <a href="https://www.instagram.com/spamkill13?stkn=eXdmemJkM25mdWdk" target="_blank" class="social-icon instagram"><i class="fa-brands fa-instagram"></i></a>
+            <a href="https://wa.me/201106727889" target="_blank" class="social-icon whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
+            <a href="tel:201006562153" class="social-icon phone"><i class="fa-solid fa-phone"></i></a>
+        </div>
+    </aside>
+
+    <div class="modal-overlay" id="adminModalOverlay">
+        <div class="modal-box">
+            <span class="close-modal-btn" onclick="closeAdminModal()">&times;</span>
+            <h2 id="modalFormTitle" style="color:var(--accent); margin-bottom:12px; font-size:1.1rem;">➕ إضافة عنصر</h2>
+            <form onsubmit="handleProductSubmit(event)">
+                <input type="hidden" id="editProductId">
+                <div class="form-group"><label>العنوان</label><input type="text" id="prodTitle" required></div>
+                <div class="form-group"><label>القسم</label>
+                    <select id="prodCategory">
+                        <option value="Gallery">Gallery</option>
+                        <option value="My Story">My Story</option>
+                        <option value="venom">venom</option>
+                        <option value="spamkill">spamkill</option>
+                        <option value="Sukuna">Sukuna</option>
+                        <option value="Anime">Anime</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>صورة العنصر (رابط أو ملف)</label><input type="file" id="prodImgFile" accept="image/*"></div>
+                <div class="form-group"><label>الوصف</label><textarea id="prodDesc" rows="2" required></textarea></div>
+                <button type="submit" class="submit-btn">نشر أونلاين</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="animalInfoModalOverlay">
+        <div class="modal-box">
+            <span class="close-modal-btn" onclick="closeAnimalInfoModal()">&times;</span>
+            <h2 id="infoModalTitle" style="color:var(--primary); margin-bottom:12px; font-size:1.1rem;">📖 معلومات عن جو الجبروت</h2>
+            <form onsubmit="handleAnimalInfoSubmit(event)">
+                <input type="hidden" id="editInfoIndex" value="">
+                <div class="form-group"><label>العنوان</label><input type="text" id="infoTitle" required></div>
+                <div class="form-group"><label>القسم</label>
+                    <select id="infoCategory">
+                        <option value="Gallery">Gallery</option>
+                        <option value="My Story">My Story</option>
+                        <option value="venom">venom</option>
+                        <option value="spamkill">spamkill</option>
+                    </select>
+                </div>
+                <div class="form-group"><label>الصورة</label><input type="file" id="infoImgFile" accept="image/*"></div>
+                <div class="form-group"><label>التفاصيل</label><textarea id="infoContent" rows="4" required></textarea></div>
+                <button type="submit" class="submit-btn" id="infoSaveBtn">حفظ ونشر</button>
+            </form>
+        </div>
+    </div>
+    
+    <div id="mainContentSection">
+        <section class="hero">
+            <div class="brand-logo-banner-img" onclick="openZoomModal('img2.jpg')"><img src="img2.jpg" alt="Logo"></div>
+            <div class="top-search-container">
+                <input type="text" id="searchInput" placeholder="ابحث في العناصر..." onkeyup="renderProducts()">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+        </section>
+        <section class="products-grid" id="productsGrid"></section>
+    </div>
+
+    <div class="info-page-container" id="infoPageSection">
+        <div style="text-align: center; margin-bottom: 20px;">
+            <h2 style="color: var(--accent); font-size: 1.5rem;"><i class="fa-solid fa-book-open"></i> موسوعة معلومات عن جو الجبروت</h2>
+            <button onclick="openAnimalInfoModal()" id="addNewInfoBtn" style="display:none; margin-top: 10px; background:var(--primary); border:none; padding:6px 14px; border-radius:6px; font-weight:800; cursor:pointer;"><i class="fa-solid fa-plus"></i> إضافة معلومة</button>
+        </div>
+        
+        <div class="info-categories-bar" id="infoCategoriesBar">
+            <div class="info-cat-btn active" onclick="filterInfoCategory('all')">الكل</div>
+            <div class="info-cat-btn" onclick="filterInfoCategory('Gallery')">Gallery</div>
+            <div class="info-cat-btn" onclick="filterInfoCategory('Sukuna')">Sukuna</div>
+            <div class="info-cat-btn" onclick="filterInfoCategory('My Story')">My Story</div>
+            <div class="info-cat-btn" onclick="filterInfoCategory('Anime')">Anime</div>
+        </div>
+
+        <div class="top-search-container" style="margin-bottom: 15px;">
+            <input type="text" id="infoSearchInput" placeholder="ابحث في الموسوعة..." onkeyup="renderAnimalInfos()">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+
+        <div id="animalInfoListContainer"></div>
+    </div>
+
+    <a href="https://wa.me/201106727889" class="whatsapp-float" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
+    <a href="tel:201006562153" class="phone-float" target="_blank"><i class="fa-solid fa-phone"></i></a>
+
+    <nav class="bottom-nav">
+        <a onclick="showMainSection()" class="nav-item active" id="navHome"><i class="fa-solid fa-house"></i><span>الرئيسية</span></a>
+        <a onclick="showInfoSection()" class="nav-item" id="navInfo"><i class="fa-solid fa-book-open"></i><span>الجبروت</span></a>
+        <a class="nav-item" id="navAddBtn" onclick="openAdminModal()" style="display:none;"><i class="fa-solid fa-plus-circle"></i><span>إضافة</span></a>
+    </nav>
+
+    <script>
+        const API_KEY = "$2a$10$2c/DUQivZwNvSVYRQGnlEuElNizwxbVdOLn9eo6M9BiLikV23lYWG";
+        const BIN_ID = "6a78f418f5f4af5e29ffdb11";       
+        const INFO_BIN_ID = "6a9163d3f5f4af5e294d6021"; 
+        
+        const MASTER_ADMIN_USERNAME = "gaprot";
+        let animalInfos = JSON.parse(localStorage.getItem('gaprot_animal_infos')) || [];
+        let currentUser = JSON.parse(localStorage.getItem('gaprot_current_user')) || null;
+        let currentFilterCategory = 'all';
+        let currentInfoCategory = 'all';
+        let products = [];
+        let siteVisits = Number(localStorage.getItem('gaprot_site_visits')) || 120;
+
+        function simpleLogin() {
+            const usernameInput = document.getElementById('usernameInput').value.trim().toLowerCase();
+            if (!usernameInput) {
+                showToast("الرجاء إدخال اسم المالك!");
+                return;
+            }
+            currentUser = {
+                username: usernameInput,
+                isAdmin: (usernameInput === MASTER_ADMIN_USERNAME || usernameInput === "spamkill")
+            };
+            localStorage.setItem('gaprot_current_user', JSON.stringify(currentUser));
+            updateUserUI();
+            renderProducts();
+            showToast("أهلاً بك يا مالك الموقع 🚀");
+        }
+
+        function simpleLogout() {
+            currentUser = null;
+            localStorage.removeItem('gaprot_current_user');
+            updateUserUI();
+            renderProducts();
+            showToast("تم تسجيل الخروج");
+        }
+
+        if (!sessionStorage.getItem('visited_session')) {
+            siteVisits++;
+            localStorage.setItem('gaprot_site_visits', siteVisits);
+            sessionStorage.setItem('visited_session', 'true');
+        }
+
+        const wildFunFacts = [
+            "⚡ جو الجبروت يتميز بقوة خارقة وهيمنة كاملة على عالم السحالي والزواحف!",
+            "🔥 Spamkill يمتلك تقنيات تدميرية خفية تفاجئ الخصوم في أجزاء من الثانية.",
+            "🦎 الكائنات هنا تتكيف مع أصعب الظروف بفضل طاقة Gaprot الفريدة.",
+            "🐍 الأسرار الدفينة في عالم الجبروت لا يكتشفها سوى الأبطال الحقيقيين."
+        ];
+        let currentFactIndex = 0;
+
+        function getNextWildInfo() {
+            const bubble = document.getElementById('wildInfoBubble');
+            currentFactIndex = (currentFactIndex + 1) % wildFunFacts.length;
+            bubble.innerText = wildFunFacts[currentFactIndex];
+        }
+
+        function closeWildWidget(e) {
+            e.stopPropagation();
+            document.getElementById('wildInfoWidget').style.display = 'none';
+        }
+
+        const music = document.getElementById('bgMusic');
+        const musicIcon = document.getElementById('musicIcon');
+        let isMusicPlaying = false;
+
+        function toggleMusic() {
+            if (isMusicPlaying) { music.pause(); musicIcon.className = "fa-solid fa-volume-xmark"; isMusicPlaying = false; }
+            else { music.play().then(() => { musicIcon.className = "fa-solid fa-volume-high"; isMusicPlaying = true; }).catch(e => console.log(e)); }
+        }
+
+        window.onload = function() {
+            updateUserUI();
+            fetchProductsFromCloud();
+            renderAnimalInfos();
+        };
+
+        async function fetchAnimalInfosFromCloud() {
+            try {
+                let response = await fetch(`https://api.jsonbin.io/v3/b/${INFO_BIN_ID}/latest`, { headers: { 'X-Master-Key': API_KEY } });
+                let data = await response.json();
+                if(data.record) {
+                    if(Array.isArray(data.record)) {
+                        animalInfos = data.record;
+                    } else if(data.record.animalInfos) {
+                        animalInfos = data.record.animalInfos;
+                    }
+                }
+                renderAnimalInfos();
+            } catch (err) {
+                renderAnimalInfos();
+            }
+        }
+
+        function renderAnimalInfos() {
+            const container = document.getElementById('animalInfoListContainer');
+            if(!container) return;
+            container.innerHTML = "";
+            let search = document.getElementById('infoSearchInput') ? document.getElementById('infoSearchInput').value.toLowerCase() : "";
+            
+            let filtered = animalInfos.filter(item => {
+                let matchesCat = currentInfoCategory === 'all' || item.category === currentInfoCategory;
+                let matchesSearch = item.title.toLowerCase().includes(search) || item.content.toLowerCase().includes(search);
+                return matchesCat && matchesSearch;
+            });
+
+            if(filtered.length === 0) {
+                container.innerHTML = `<p style="text-align:center; color:var(--text-muted); padding:20px;">لا توجد معلومات مضافة حالياً عن جو الجبروت.</p>`;
+                return;
+            }
+
+            filtered.forEach((item, index) => {
+                let card = document.createElement('div');
+                card.className = 'info-card';
+                card.innerHTML = `
+                    <div class="info-header-row">
+                        <div class="info-title">${item.title}</div>
+                        ${isUserAuthorized() ? `<button onclick="deleteAnimalInfo(${index})" style="background:var(--danger); color:#fff; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">حذف</button>` : ''}
+                    </div>
+                    ${item.image ? `<div class="info-img-container" onclick="openZoomModal('${item.image}')"><img src="${item.image}" class="info-img"></div>` : ''}
+                    <div class="info-text">${item.content}</div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterInfoCategory(cat) {
+            currentInfoCategory = cat;
+            document.querySelectorAll('.info-cat-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderAnimalInfos();
+        }
+
+        function showToast(msg) {
+            const c = document.getElementById('toastContainer');
+            if(!c) return;
+            const t = document.createElement('div');
+            t.className = 'toast';
+            t.innerHTML = `<span>${msg}</span>`;
+            c.appendChild(t);
+            setTimeout(() => t.remove(), 2500);
+        }
+
+        async function fetchProductsFromCloud() {
+            try {
+                let response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, { headers: { 'X-Master-Key': API_KEY } });
+                let data = await response.json();
+                if(data.record && data.record.length > 0) products = data.record;                                          
+                renderProducts();
+            } catch (err) { 
+                renderProducts(); 
+            }
+        }
+
+        function renderProducts() {
+            const grid = document.getElementById('productsGrid');
+            if(!grid) return;
+            grid.innerHTML = "";
+            let search = document.getElementById('searchInput') ? document.getElementById('searchInput').value.toLowerCase() : "";
+
+            let filtered = products.filter(p => {
+                let matchesCat = currentFilterCategory === 'all' || p.category === currentFilterCategory;
+                let matchesSearch = p.title.toLowerCase().includes(search) || p.desc.toLowerCase().includes(search);
+                return matchesCat && matchesSearch;
+            });
+
+            if(filtered.length === 0) {
+                grid.innerHTML = `<p style="grid-column: span 2; text-align:center; color:var(--text-muted); padding:30px;">لا توجد عناصر في هذا القسم.</p>`;
+                return;
+            }
+
+            filtered.forEach((p, index) => {
+                let card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    ${isUserAuthorized() ? `
+                        <div class="owner-actions" style="display:flex;">
+                            <button class="owner-btn edit-card-btn" onclick="openAdminModal(${index})"><i class="fa-solid fa-pen"></i></button>
+                            <button class="owner-btn delete-card-btn" onclick="deleteProduct(${index})"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    ` : ''}
+                    <div class="img-container" onclick="openZoomModal('${p.image}')"><img src="${p.image}" alt="${p.title}"></div>
+                    <div class="product-info">
+                        <div>
+                            <div class="product-title">${p.title}</div>
+                            <div class="product-desc">${p.desc}</div>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function isUserAuthorized() { 
+            return currentUser && currentUser.isAdmin === true; 
+        }
+
+        function updateUserUI() {
+            const auth = isUserAuthorized();
+            const counterBox = document.getElementById('visitorCounterBox');
+            const countVal = document.getElementById('visitorCountVal');
+            const loginSection = document.getElementById('loginSection');
+            const welcomeSection = document.getElementById('welcomeSection');
+
+            if (currentUser) {
+                document.getElementById('sidebarUserName').innerText = currentUser.username;
+                loginSection.style.display = 'none';
+                welcomeSection.style.display = 'block';
+                document.getElementById('welcomeMsg').innerText = "مرحباً بالمالك، " + currentUser.username;
+                
+                if(auth) {
+                    document.getElementById('sidebarUserEmail').innerText = "المالك المسيطر 👑";
+                    counterBox.style.display = 'block';
+                    countVal.innerText = siteVisits;
+                    document.getElementById('navAddBtn').style.display = 'flex';
+                    document.getElementById('sidebarAddProductItem').style.display = 'flex';
+                    document.getElementById('sidebarAddInfoItem').style.display = 'flex';
+                    document.getElementById('addNewInfoBtn').style.display = 'inline-block';
+                } else {
+                    document.getElementById('sidebarUserEmail').innerText = "زائر مميز ✨";
+                    counterBox.style.display = 'none';
+                    document.getElementById('navAddBtn').style.display = 'none';
+                    document.getElementById('sidebarAddProductItem').style.display = 'none';
+                    document.getElementById('sidebarAddInfoItem').style.display = 'none';
+                    document.getElementById('addNewInfoBtn').style.display = 'none';
+                }
+            } else {
+                document.getElementById('sidebarUserName').innerText = "زائر";
+                document.getElementById('sidebarUserEmail').innerText = "تسجيل دخول المالك مطلوب";
+                loginSection.style.display = 'block';
+                welcomeSection.style.display = 'none';
+                counterBox.style.display = 'none';
+                document.getElementById('navAddBtn').style.display = 'none';
+                document.getElementById('sidebarAddProductItem').style.display = 'none';
+                document.getElementById('sidebarAddInfoItem').style.display = 'none';
+                document.getElementById('addNewInfoBtn').style.display = 'none';
+            }
+            renderAnimalInfos();
+        }
+
+        function showMainSection() {
+            document.getElementById('mainContentSection').style.display = 'block';
+            document.getElementById('infoPageSection').style.display = 'none';
+            document.getElementById('navHome').classList.add('active');
+            document.getElementById('navInfo').classList.remove('active');
+        }
+
+        function showInfoSection() {
+            document.getElementById('mainContentSection').style.display = 'none';
+            document.getElementById('infoPageSection').style.display = 'block';
+            document.getElementById('navInfo').classList.add('active');
+            document.getElementById('navHome').classList.remove('active');
+            fetchAnimalInfosFromCloud();
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        function filterCategory(cat) {
+            currentFilterCategory = cat;
+            renderProducts();
+            showToast("تم عرض قسم: " + cat);
+        }
+
+        function openZoomModal(imgSrc) {
+            document.getElementById('zoomedImg').src = imgSrc;
+            document.getElementById('imageZoomModal').classList.add('active');
+        }
+
+        function closeZoomModal() {
+            document.getElementById('imageZoomModal').classList.remove('active');
+        }
+
+        function openAdminModal() {
+            document.getElementById('adminModalOverlay').classList.add('active');
+        }
+
+        function closeAdminModal() {
+            document.getElementById('adminModalOverlay').classList.remove('active');
+        }
+
+        function openAnimalInfoModal() {
+            document.getElementById('animalInfoModalOverlay').classList.add('active');
+        }
+
+        function closeAnimalInfoModal() {
+            document.getElementById('animalInfoModalOverlay').classList.remove('active');
+        }
+    </script>
+</body>
+</html>
