@@ -313,6 +313,7 @@ async function updateGalleryCloudStorage() {
 // دالة جلب بيانات الجالري
 async function fetchGalleryFromCloud() {
     try {
+    
         let response = await fetch(`https://api.jsonbin.io/v3/b/${GALLERY_BIN_ID}/latest`, {
             method: 'GET',
             headers: {
@@ -351,8 +352,6 @@ async function updateStoryCloudStorage() {
         showToast("خطأ في الاتصال بالإنترنت!");
     }
 }
-
-// دالة جلب بيانات ماي ستوري
 async function fetchStoryFromCloud() {
     try {
         let response = await fetch(`https://api.jsonbin.io/v3/b/${STORY_BIN_ID}/latest`, {
@@ -361,16 +360,18 @@ async function fetchStoryFromCloud() {
                 'X-Master-Key': API_KEY
             }
         });
-
+        
         if (response.ok) {
             let data = await response.json();
             myStories = data.record || [];
-            renderStories(); // دالة العرض الخاصة بالستوري
+            renderStories(); 
         }
-    } catch (error) {
+    } catch (err) {
         showToast("خطأ في تحميل القصص");
     }
 }
+
+
 
         const MASTER_ADMIN_USERNAME = "gaprot";
         let animalInfos = JSON.parse(localStorage.getItem('gaprot_animal_infos')) || [];
