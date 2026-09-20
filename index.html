@@ -607,8 +607,14 @@ window.onload = function() {
                 document.getElementById('sidebarAddInfoItem').style.display = 'none';
                 document.getElementById('addNewInfoBtn').style.display = 'none';
             }
-            renderAnimalInfos();
+            
         }
+window.onload = function() {
+    updateUserUI();
+    fetchGalleryFromCloud();
+    fetchStoryFromCloud();
+    renderAnimalInfos();
+};
 
         function showMainSection() {
             document.getElementById('mainContentSection').style.display = 'block';
