@@ -437,12 +437,14 @@ async function fetchStoryFromCloud() {
             if (isMusicPlaying) { music.pause(); musicIcon.className = "fa-solid fa-volume-xmark"; isMusicPlaying = false; }
             else { music.play().then(() => { musicIcon.className = "fa-solid fa-volume-high"; isMusicPlaying = true; }).catch(e => console.log(e)); }
         }
+window.onload = function() {
+    updateUserUI();
+    fetchGalleryFromCloud();  // دي خاصة بجلب الجالري
+    fetchStoryFromCloud();    // دي خاصة بجلب ماي ستوري
+    fetchAnimalInfosfromCloud(); // دي خاصة بجلب الأنشطة والمعلومات
+    renderAnimalInfos();
+};
 
-        window.onload = function() {
-            updateUserUI();
-            fetchProductsFromCloud();
-            renderAnimalInfos();
-        };
 
         async function fetchAnimalInfosFromCloud() {
             try {
